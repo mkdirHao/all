@@ -17,14 +17,25 @@
 <body>
 
 
-  <div  class="container-fluid ">
-   <div id="all" class="row row-cols-4">'
-
+  <div class="container-fluid ">
+    <div id="all" class="row row-cols-4">
+    </div>
   </div>
 
 
 
   <script>
+
+
+    var screenWidth = window.innerWidth;
+    if (screenWidth<800){
+     const adj = document.getElementById("all")
+     adj.classList.remove("row-cols-4")
+     adj.classList.toggle('row-cols-2');
+    }
+  
+   
+   
 
 
     $.ajax({
@@ -43,23 +54,23 @@
           var list = response[i];
           html += '<div class="col">'
           html += '<div class="card  border-dark text-bg-light text-center">';
-          html += '<div class="card-header">'+list.name+'</div>'
+          html += '<div class="card-header">' + list.name + '</div>'
           html += ' <div class="card-body text-success">';
-          if (list.description == null){
-            html += '<p class="card-text ">'+ list.name + '</p>';
-          }else{
-            html += '<details><summary>describe</summary><p>'+ list.description + '<p/></details>';
+          if (list.description == null) {
+            html += '<p class="card-text ">' + list.name + '</p>';
+          } else {
+            html += '<details><summary>describe</summary><p>' + list.description + '<p/></details>';
           }
 
           html += '<div class="d-grid gap-2 ">'
           html += '<a href="' + list.html_url + '" class="btn btn-success btn-sm" role="button" target="_blank">repo地址</a>';
-          if (list.has_pages){
+          if (list.has_pages) {
             html += '<a href="https://awesome-jianso.github.io/' + list.name + '" class="btn btn-success btn-sm" role="button"  target="_blank">page地址</a>';
           }
           else {
             html += '<a href="" class="btn btn-secondary btn-sm disabled" role="button"  target="_blank">no page</a>';
           }
-          
+
           html += '</div></div></div></div>';
 
 
