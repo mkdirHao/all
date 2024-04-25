@@ -42,10 +42,15 @@
         for (var i = 0; i < response.length; i++) {    //遍历data数组
           var list = response[i];
           html += '<div class="col">'
-          html += '<div class="card border-dark text-bg-light text-center">';
-          html += '<div class="card-header">awesome-jianso</div>'
+          html += '<div class="card  border-dark text-bg-light text-center">';
+          html += '<div class="card-header">'+list.name+'</div>'
           html += ' <div class="card-body text-success">';
-          html += '<p class="card-text ">' + list.name + '</p>';
+          if (list.description == null){
+            html += '<p class="card-text ">'+ list.name + '</p>';
+          }else{
+            html += '<details><summary>describe</summary><p>'+ list.description + '<p/></details>';
+          }
+
           html += '<div class="d-grid gap-2 ">'
           html += '<a href="' + list.html_url + '" class="btn btn-success btn-sm" role="button" target="_blank">repo地址</a>';
           if (list.has_pages){
