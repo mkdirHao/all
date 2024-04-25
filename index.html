@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+  
+</head>
+<body>
+  
+
+    <div id="all"></div>
+
+
+    
+  <script>
+
+    
+    $.ajax({
+        url:"https://api.github.com/orgs/awesome-jianso/repos",
+        type:"GET",
+        dataType:"json",
+    
+
+       
+    // Work with the response
+    success: function( response ) {
+        console.log( response ); // server response
+
+        var html = "";
+                for(var i=0;i<response.length;i++){    //遍历data数组
+                        var list = response[i];     
+                        html +="<span>项目名称：:"+list.full_name+" 仓库地址:"+list.html_url+ "  <br> </span>";
+                        html +="<span>doc地址: https://awesome-jianso.github.io/"+list.name+ " <br> </span>"
+                    }
+                    $("#all").html(html); //在html页面id=test的标签里显示html内容
+    }
+
+    
+
+    })
+    
+
+
+  </script>
+  
+</body>
+</html>
