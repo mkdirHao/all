@@ -1,51 +1,68 @@
 <!doctype html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <title>All</title>
-    <script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  <meta charset="utf-8">
+  <title>All</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
-  
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 </head>
+
 <body>
-  
-
-    <div id="all"></div>
 
 
-    
+  <div id="all" class="row row-cols-1 row-cols-md-4 g-4"></div>
+
+
+
   <script>
 
-    
-    $.ajax({
-        url:"https://api.github.com/orgs/awesome-jianso/repos",
-        type:"GET",
-        dataType:"json",
-    
 
-       
-    // Work with the response
-    success: function( response ) {
-        console.log( response ); // server response
+    $.ajax({
+      url: "https://api.github.com/orgs/awesome-jianso/repos",
+      type: "GET",
+      dataType: "json",
+
+
+
+      // Work with the response
+      success: function (response) {
+        console.log(response); // server response
 
         var html = "";
-                for(var i=0;i<response.length;i++){    //遍历data数组
-                        var list = response[i];     
-                        html +="<span>项目名称：:"+list.full_name+" 仓库地址:"+list.html_url+ "  <br> </span>";
-                        html +="<span>doc地址: https://awesome-jianso.github.io/"+list.name+ " <br> </span>"
-                    }
-                    $("#all").html(html); //在html页面id=test的标签里显示html内容
-    }
+        for (var i = 0; i < response.length; i++) {    //遍历data数组
+          var list = response[i];
+          html += '<div class="col">'
+          html += '<div class="card border-dark text-bg-light text-center" >';
+          html += '<div class="card-header">awesome-jianso</div>'
+          html += ' <div class="card-body text-success">';
+          html += '<h6 class="card-title">' + list.name + '</h6>';
+          html += '<div class="d-grid gap-2 ">'
+          html += '<a href="' + list.html_url + '" class="btn btn-success btn-sm" role="button" target="_blank">repo地址</a>';
+          html += '<a href="https://awesome-jianso.github.io/' + list.name + '" class="btn btn-info btn-sm" role="button"  target="_blank">doc地址</a>';
+          html += ' </div></div></div></div>';
 
-    
+
+
+
+        }
+        $("#all").html(html); //在html页面id=test的标签里显示html内容
+      }
+
+
 
     })
-    
+
 
 
   </script>
-  
+
 </body>
+
 </html>
