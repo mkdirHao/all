@@ -16,6 +16,8 @@
 
 <body>
 
+  
+
 
   <div class="container-fluid ">
     <div id="all" class="row row-cols-4">
@@ -26,16 +28,16 @@
 
   <script>
 
-
-    var screenWidth = window.innerWidth;
-    if (screenWidth<800){
-     const adj = document.getElementById("all")
-     adj.classList.remove("row-cols-4")
-     adj.classList.toggle('row-cols-2');
+    var screenWidth = document.body.clientWidth
+    var winWidth = window.innerWidth;
+    if (screenWidth < 800 || winWidth < 800) {
+      const adj = document.getElementById("all")
+      adj.classList.remove("row-cols-4")
+      adj.classList.toggle('row-cols-2');
     }
-  
-   
-   
+
+
+
 
 
     $.ajax({
