@@ -2,100 +2,183 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>All</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
-
-  
   <div class="alert alert-warning alert-dismissible fade show text-center" role="alert">
     <strong>Hello everyone</strong> there is all the repos.
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 
-  <div class="container-fluid ">
-    <div id="all" class="row row-cols-4">
-    </div>
+  <div class="container-fluid">
+    <div id="all" class="row row-cols-4"></div>
   </div>
 
-
+  <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+    <button id="first" class="btn btn-success btn-lg ">first</button>
+    <button id="prev" class="btn btn-primary btn-lg ">prev</button>
+    <button id="next" class="btn btn-primary btn-lg ">next</button>
+    <button id="last" class="btn btn-success btn-lg ">last</button>
+  </div>
 
   <script>
-
-
-
-    
-    var screenWidth = document.body.clientWidth
+    var screenWidth = document.body.clientWidth;
     var winWidth = window.innerWidth;
     if (screenWidth < 1000 || winWidth < 1000) {
-      const adj = document.getElementById("all")
-      adj.classList.remove("row-cols-4")
-      adj.classList.toggle('row-cols-2');
+      const adj = document.getElementById("all");
+      adj.classList.remove("row-cols-4");
+      adj.classList.toggle("row-cols-2");
     }
 
+    window.onload = function () {
+      reqUrl = "https://api.github.com/orgs/awesome-jianso/repos?per_page=40";
+      links = next(reqUrl);
+      $("#first").click(function () {
+        next(links.first);
+      });
 
+      $("#prev").click(function () {
+        next(links.prev);
+      });
+      $("#next").click(function () {
+        next(links.next);
+      });
+      $("#last").click(function () {
+        next(links.last);
+      });
+    };
+    function next(reqUrl) {
+      data = getData(reqUrl);
+      var html = fillData(data);
+      links = parse_link_header(data.link);
+      $("#all").html(html); //在html页面id=test的标签里显示html内容
+      $(window).scrollTop(0);
+      if (links.first == undefined || links.first == null) {
+        $("#first").attr("disabled", "true");
+      } else {
+        $("#first").removeAttr("disabled");
+      }
+      if (links.last == undefined || links.last == null) {
+        $("#last").attr("disabled", "true");
+      } else {
+        $("#last").removeAttr("disabled");
+      }
+      if (links.next == undefined || links.next == null) {
+        $("#next").attr("disabled", "true");
+      } else {
+        $("#next").removeAttr("disabled");
+      }
+      if (links.prev == undefined || links.prev == null) {
+        $("#prev").attr("disabled", "true");
+      } else {
+        $("#prev").removeAttr("disabled");
+      }
+      return links;
+    }
+    function getData(reqUrl) {
+      var resp = [];
+      var link;
+      $.ajax({
+        url: reqUrl,
+        headers: {
+          Accept: "application/vnd.github+json",
+        },
+        type: "GET",
+        async: false,
+        //dataType: "json",
 
+        // Work with the response
+        success: function (response) {
+          resp = response;
+        },
 
+        complete: function (xhr, data) {
+          async: false;
+          /*
+获取相关Http Response header
+getResponseHeader(key)：获取指定头信息
+getAllResponseHeaders()：获取全部可默认可获取的头信息
+*/
+          // var date = xhr.getResponseHeader("Date"); // 服务器端时间
 
-    $.ajax({
-      url: "https://api.github.com/orgs/awesome-jianso/repos?per_page=100",
-      type: "GET",
-      dataType: "json",
+          //获取服务端自定义的header信息
+          link = xhr.getResponseHeader("Link");
 
+          var list = xhr.getAllResponseHeaders();
+        },
+      });
+      return {resp, link};
+    }
+    function fillData(data) {
+      var html = "";
 
-
-      // Work with the response
-      success: function (response) {
-        console.log(response); // server response
-
-        var html = "";
-        for (var i = 0; i < response.length; i++) {    //遍历data数组
-          var list = response[i];
-          html += '<div class="col">'
-          html += '<div class="card  border-dark text-bg-light text-center">';
-          html += '<div class="card-header h3">' + list.name + '</div>'
-          html += ' <div class="card-body text-success">';
-          if (list.description == null) {
-            html += '<details><summary>' + list.name + '</summary></details>';
-          } else {
-            html += '<details><summary>describe</summary><p>' + list.description + '<p/></details>';
-          }
-
-          html += '<div class="d-grid gap-2 ">'
-          html += '<a href="' + list.html_url + '" class="btn btn-success btn-sm " style="font-size: 1.5rem;" role="button" target="_blank">repo地址</a>';
-          if (list.has_pages) {
-            html += '<a href="https://'+list.owner.login+'.github.io/' + list.name + '" class="btn btn-success btn-sm" style="font-size: 1.5rem;" role="button"  target="_blank">page地址</a>';
-          }
-          else {
-            html += '<a href="" class="btn btn-secondary btn-sm  disabled" style="font-size: 1.5rem;" role="button"  target="_blank">no page</a>';
-          }
-
-          html += '</div></div></div></div>';
-
-
-
-
+      for (var i = 0; i < data.resp.length; i++) {
+        //遍历data数组
+        var list = data.resp[i];
+        html += '<div class="col">';
+        html += '<div class="card  border-dark text-bg-light text-center">';
+        html += '<div class="card-header h3">' + list.name + "</div>";
+        html += ' <div class="card-body text-success">';
+        if (list.description == null) {
+          html += "<details><summary>" + list.name + "</summary></details>";
+        } else {
+          html +=
+            "<details><summary>describe</summary><p>" +
+            list.description +
+            "<p/></details>";
         }
-        $("#all").html(html); //在html页面id=test的标签里显示html内容
+
+        html += '<div class="d-grid gap-2 ">';
+        html +=
+          '<a href="' +
+          list.html_url +
+          '" class="btn btn-success btn-sm " style="font-size: 1.5rem;" role="button" target="_blank">repo地址</a>';
+        if (list.has_pages) {
+          html +=
+            '<a href="https://' +
+            list.owner.login +
+            ".github.io/" +
+            list.name +
+            '" class="btn btn-success btn-sm" style="font-size: 1.5rem;" role="button"  target="_blank">page地址</a>';
+        } else {
+          html +=
+            '<a href="" class="btn btn-secondary btn-sm  disabled" style="font-size: 1.5rem;" role="button"  target="_blank">no page</a>';
+        }
+
+        html += "</div></div></div></div>";
+      }
+      return html;
+    }
+    function parse_link_header(header) {
+      if (header.length === 0) {
+        throw new Error("input must not be of zero length");
       }
 
-
-
-    })
-
-
-
+      // Split parts by comma
+      var parts = header.split(",");
+      var links = {};
+      // Parse each part into a named link
+      for (var i = 0; i < parts.length; i++) {
+        var section = parts[i].split(";");
+        if (section.length !== 2) {
+          throw new Error("section could not be split on ';'");
+        }
+        var url = section[0].replace(/<(.*)>/, "$1").trim();
+        var name = section[1].replace(/rel="(.*)"/, "$1").trim();
+        links[name] = url;
+      }
+      return links;
+    }
   </script>
-
 </body>
 
 </html>
