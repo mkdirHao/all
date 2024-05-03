@@ -24,10 +24,10 @@
   </div>
 
   <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-    <button id="first" class="btn btn-success btn-lg ">first</button>
-    <button id="prev" class="btn btn-primary btn-lg ">prev</button>
-    <button id="next" class="btn btn-primary btn-lg ">next</button>
-    <button id="last" class="btn btn-success btn-lg ">last</button>
+    <button id="first" class="btn btn-success btn-lg">first</button>
+    <button id="prev" class="btn btn-primary btn-lg">prev</button>
+    <button id="next" class="btn btn-primary btn-lg">next</button>
+    <button id="last" class="btn btn-success btn-lg">last</button>
   </div>
 
   <script>
@@ -40,7 +40,8 @@
     }
 
     window.onload = function () {
-      reqUrl = "https://api.github.com/orgs/awesome-jianso/repos?per_page=40";
+      reqUrl =
+        "https://api.github.com/orgs/awesome-jianso/repos?per_page=40";
       links = next(reqUrl);
       $("#first").click(function () {
         next(links.first);
@@ -159,13 +160,13 @@ getAllResponseHeaders()：获取全部可默认可获取的头信息
       return html;
     }
     function parse_link_header(header) {
-      if (header.length === 0) {
-        throw new Error("input must not be of zero length");
+      var links = {};
+      if (header == null || header.length === 0) {
+        return links;
       }
-
       // Split parts by comma
       var parts = header.split(",");
-      var links = {};
+
       // Parse each part into a named link
       for (var i = 0; i < parts.length; i++) {
         var section = parts[i].split(";");
